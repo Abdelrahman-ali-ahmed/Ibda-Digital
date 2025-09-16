@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ibda Digital | كل حاجة بتبدأ بـ click</title>
+   
+    <script src="https://cdn.tailwindcss.com"></script>
+   
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+   
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            scroll-behavior: smooth;
+            background-color: #0D1117;
+            color: #E6EDF3;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #30C59B, #00A3FF);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; text-fill-color: transparent;
+        }
+        /* --- REFINED: Premium Glass Effect --- */
+        .glass-effect {
+            background: rgba(13, 17, 23, 0.5); /* Darker, more subtle background */
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #0D1117; z-index: 9999; display: flex;
+            justify-content: center; align-items: center;
+            transition: opacity 0.7s ease, visibility 0.7s ease;
+        }
+        .loader {
+            width: 50px; height: 50px; border: 5px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #30C59B; border-radius: 50%;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .reveal {
+            opacity: 0; transform: translateY(50px);
+            transition: opacity 0.8s cubic-bezier(0.645, 0.045, 0.355, 1), transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+       
+        .btn-premium {
+            transition: all 0.2s ease-out; position: relative; overflow: hidden; z-index: 1;
+            background-color: #30C59B; border: 1px solid transparent;
+        }
+        .btn-premium:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(48, 197, 155, 0.6), 0 0 35px rgba(0, 163, 255, 0.4);
+        }
+        .btn-premium:active { /* Click animation */
+            transform: scale(0.98);
+            box-shadow: 0 0 10px rgba(48, 197, 155, 0.5);
+        }
+       
+        #hero-cta-btn { animation: pulse-glow 2.5s infinite; }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(48, 197, 155, 0.7), 0 0 25px rgba(0, 163, 255, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(48, 197, 155, 1), 0 0 45px rgba(0, 163, 255, 0.7); }
+        }
+
+
+        .animated-gradient-bg { background: #0D1117; position: relative; z-index: 1; }
+       
+        /* --- Animated Background Blobs --- */
+        .background-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: -1;
+            will-change: transform;
+        }
+        .blob-1 {
+            width: 500px; height: 500px; top: 10%; left: 5%; background: #30C59B;
+            animation: move-blob-1 30s infinite alternate;
+        }
+        .blob-2 {
+            width: 600px; height: 600px; bottom: 5%; right: 5%; background: #00A3FF;
+            animation: move-blob-2 25s infinite alternate;
+        }
+        @keyframes move-blob-1 {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20vw, 10vh) scale(1.2); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+        @keyframes move-blob-2 {
+            0% { transform: translate(0, 0) scale(1.2) rotate(90deg); }
+            50% { transform: translate(-15vw, -10vh) scale(1); }
+            100% { transform: translate(0, 0) scale(1.2) rotate(90deg); }
+        }
+
+
+       
+        /* --- SMOOTH 3D Card Effect --- */
+        #services-grid { perspective: 1000px; }
+        .card-glow {
+            transform-style: preserve-3d;
+            transition: box-shadow 0.4s ease, border-color 0.4s ease, filter 0.4s ease; /* Transitions for other properties */
+        }
+        .card-glow.is-transitioning {
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease, border-color 0.4s ease, filter 0.4s ease;
+        }
+        .card-glow:hover {
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4); /* Deeper shadow on hover */
+            filter: saturate(1.5);
+        }
+        .service-icon-container { transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+        .card-glow:hover .service-icon-container { transform: scale(1.15) translateZ(30px); }
+       
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+            z-index: 100; display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content {
+            background: #161B22; border: 1px solid rgba(139, 148, 158, 0.2);
+            padding: 2rem; border-radius: 1rem; max-width: 600px; width: 90%;
+            transform: scale(0.9); transition: transform 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto; position: relative;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .close-modal {
+            position: absolute; top: 1rem; left: 1.5rem;
+            cursor: pointer; font-size: 2rem; color: #E6EDF3;
+            line-height: 1;
+        }
+       
+        .btn-cta {
+            box-shadow: 0 0 15px rgba(48, 197, 155, 0.5);
+            transition: all 0.3s ease;
+        }
+        .btn-cta:hover {
+             box-shadow: 0 0 25px rgba(48, 197, 155, 0.9), 0 0 40px rgba(0, 163, 255, 0.7);
+        }
+
+
+        /* --- Service Card Color Themes --- */
+        .service-color-1 .service-icon-container { background-image: linear-gradient(to top right, #00A3FF, #00c6ff); }
+        .service-color-1:hover { border-color: #00A3FF; }
+        #modal-title.service-color-1-text { background: linear-gradient(90deg, #00A3FF, #00c6ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; }
+
+
+        .service-color-2 .service-icon-container { background-image: linear-gradient(to top right, #E94057, #F27121); }
+        .service-color-2:hover { border-color: #E94057; }
+        #modal-title.service-color-2-text { background: linear-gradient(90deg, #E94057, #F27121); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; }
+
+
+        .service-color-3 .service-icon-container { background-image: linear-gradient(to top right, #30C59B, #45e0b5); }
+        .service-color-3:hover { border-color: #30C59B; }
+        #modal-title.service-color-3-text { background: linear-gradient(90deg, #30C59B, #45e0b5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; }
+
+
+        .service-color-4 .service-icon-container { background-image: linear-gradient(to top right, #ff9966, #ff5e62); }
+        .service-color-4:hover { border-color: #ff5e62; }
+        #modal-title.service-color-4-text { background: linear-gradient(90deg, #ff9966, #ff5e62); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; }
+
+
+        .service-color-5 .service-icon-container { background-image: linear-gradient(to top right, #c31432, #240b36); }
+        .service-color-5:hover { border-color: #c31432; }
+        #modal-title.service-color-5-text { background: linear-gradient(90deg, #c31432, #a01029); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; }
+
+
+        .service-color-6 .service-icon-container { background-image: linear-gradient(to top right, #654ea3, #eaafc8); }
+        .service-color-6:hover { border-color: #eaafc8; }
+        #modal-title.service-color-6-text { background: linear-gradient(90deg, #654ea3, #eaafc8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; }
+
+
+        .service-color-7 .service-icon-container { background-image: linear-gradient(to top right, #525252, #111111); }
+        .service-color-7:hover { border-color: #434343; }
+        #modal-title.service-color-7-text { background: linear-gradient(90deg, #666666, #999999); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; }
+    </style>
+</head>
+<body class="animated-gradient-bg">
+   
+    <!-- Background Blobs Divs -->
+    <div class="background-blob blob-1"></div>
+    <div class="background-blob blob-2"></div>
+
+
+    <div id="preloader"><div class="loader"></div></div>
+
+
+    <!-- Header -->
+    <header id="header" class="glass-effect fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-6 py-2">
+            <div class="flex items-center justify-between">
+                <a href="#hero" class="flex items-center gap-3 group">
+                    
+                         <img src="./Ibda-Digtal.png" alt="Ibda Digital Logo Placeholder" class="w-10 h-10 rounded-full">
+                    
+                    <span class="text-2xl font-extrabold text-white">Ibda Digital</span>
+                </a>
+                <nav class="hidden md:flex items-center space-x-6 lg:space-x-10">
+                    <a href="#hero" class="text-gray-300 hover:gradient-text font-medium transition-colors">الرئيسية</a>
+                    <a href="#about" class="text-gray-300 hover:gradient-text font-medium transition-colors">من نحن</a>
+                    <a href="#services" class="text-gray-300 hover:gradient-text font-medium transition-colors">خدماتنا</a>
+                    <a href="#portfolio" class="text-gray-300 hover:gradient-text font-medium transition-colors">أعمالنا</a>
+                    <a href="#contact" class="text-gray-300 hover:gradient-text font-medium transition-colors">تواصل معنا</a>
+                </nav>
+                <a href="#contact" class="hidden md:inline-block btn-premium text-white font-bold py-2 px-6 rounded-full">
+                    <span>احجز استشارتك</span>
+                </a>
+                <button id="mobile-menu-button" class="md:hidden text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 glass-effect border-t border-gray-700">
+             <a href="#hero" class="block py-2 text-gray-300 hover:gradient-text">الرئيسية</a>
+             <a href="#about" class="block py-2 text-gray-300 hover:gradient-text">من نحن</a>
+             <a href="#services" class="block py-2 text-gray-300 hover:gradient-text">خدماتنا</a>
+             <a href="#portfolio" class="block py-2 text-gray-300 hover:gradient-text">أعمالنا</a>
+             <a href="#contact" class="block py-2 text-gray-300 hover:gradient-text">تواصل معنا</a>
+             <a href="#contact" class="block mt-4 text-center btn-premium text-white font-bold py-2 px-6 rounded-full"><span>احجز استشارتك</span></a>
+        </div>
+    </header>
+
+
+    <main class="relative z-10">
+        <!-- Hero Section -->
+        <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+             <!-- RESTORED Pulsing Glow -->
+             <div class="absolute inset-0 z-0">
+                <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse"></div>
+                <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-green-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse" style="animation-delay: 2s;"></div>
+            </div>
+           
+            <canvas id="background-animation" class="absolute top-0 left-0 w-full h-full z-0"></canvas>
+           
+            <div class="container mx-auto px-6 text-center relative z-10 flex flex-col justify-center h-full">
+                <div class="new "> <img src="./Ibda-Digtal.png" alt="Ibda Digital Logo Placeholder" class="w-10 h-10 rounded-full"> </div>
+               
+                <h1  class="text-4xl md:text-6xl lg:text-8xl font-black mb-6 leading-tight reveal">
+                    كل حاجة بتبدأ بـ <span class="gradient-text">click</span>
+                </h1>
+                <p id="step-word" class="text-lg md:text-xl max-w-3xl mx-auto text-gray-300 mb-8 reveal" style="transition-delay: 200ms;">
+                    الخطوة الأولى نحو مستقبل رقمي مبهر لعلامتك التجارية.
+                </p>
+                <div class="reveal" style="transition-delay: 400ms;">
+                     <a href="#contact" id="hero-cta-btn" class="btn-premium text-white font-bold text-lg py-3 px-8 rounded-full">
+                        <span>ابدأ أول خطوة</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- About Us Section -->
+        <section id="about" class="py-20">
+            <div class="container mx-auto px-6">
+                 <div class="flex flex-col lg:flex-row items-center gap-12">
+                    <div class="lg:w-1/2 reveal">
+                        <h2 class="text-4xl md:text-5xl font-extrabold mb-6">من نحن؟ <br><span class="gradient-text">شركاء نجاحك الرقمي</span></h2>
+                        <p class="text-lg text-gray-300 mb-4 leading-relaxed">
+                           في "إبدأ ديجيتال"، نحن لا نقدم خدمات تسويقية فقط، بل نبني شراكات استراتيجية تبدأ بفهم عميق لأهدافك وتنتهي بتحقيق نتائج ملموسة. نؤمن بأن كل علامة تجارية لها قصة فريدة، ومهمتنا هي أن نروي هذه القصة بأكثر الطرق إبداعًا وفعالية في العالم الرقمي.
+                        </p>
+                        <p class="text-lg text-gray-300 leading-relaxed">
+                            نحن فريق من المبدعين، المحللين، والاستراتيجيين الذين يعيشون ويتنفسون التسويق الرقمي. نستخدم البيانات لنقود إبداعنا، ونحول التحديات إلى فرص، والأهداف إلى واقع.
+                        </p>
+                    </div>
+                     <div class="lg:w-1/2 reveal" style="transition-delay: 200ms;">
+                        <img src="https://placehold.co/600x400/010409/30C59B?text=Ibda+Digital+Team" alt="فريق إبدأ ديجيتال" class="rounded-2xl shadow-2xl w-full">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Services Section -->
+        <section id="services" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-extrabold mb-4 reveal">خدماتنا: الأدوات التي نصنع بها نجاحك</h2>
+                    <p class="text-lg text-gray-300 max-w-3xl mx-auto reveal" style="transition-delay: 150ms;">
+                        نقدم حلولًا متكاملة تضمن لعلامتك التجارية حضورًا رقميًا قويًا ومؤثرًا. كل خدمة مصممة بعناية لتحقيق أهداف محددة وقابلة للقياس.
+                    </p>
+                </div>
+                <div id="services-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Service cards generated by JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Portfolio Section -->
+        <section id="portfolio" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-extrabold mb-4 reveal">أعمالنا تتحدث عنا</h2>
+                    <p class="text-lg text-gray-300 max-w-3xl mx-auto reveal" style="transition-delay: 150ms;">
+                       نؤمن بأن النتائج هي أفضل دليل. إليك لمحة عن بعض قصص النجاح التي صنعناها مع شركائنا.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="reveal card-glow glass-effect rounded-2xl overflow-hidden group">
+                        <img src="https://placehold.co/600x400/161b22/00A3FF?text=Project+1" class="w-full h-60 object-cover group-hover:scale-110 transition-transform duration-500" alt="Project 1">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">اسم المشروع الأول</h3>
+                            <p class="text-gray-400">حملة إعلانية لمتجر إلكتروني</p>
+                        </div>
+                    </div>
+                    <div class="reveal card-glow glass-effect rounded-2xl overflow-hidden group" style="transition-delay: 150ms;">
+                        <img src="https://placehold.co/600x400/161b22/30C59B?text=Project+2" class="w-full h-60 object-cover group-hover:scale-110 transition-transform duration-500" alt="Project 2">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">اسم المشروع الثاني</h3>
+                            <p class="text-gray-400">إدارة حسابات تواصل اجتماعي</p>
+                        </div>
+                    </div>
+                    <div class="reveal card-glow glass-effect rounded-2xl overflow-hidden group" style="transition-delay: 300ms;">
+                        <img src="https://placehold.co/600x400/161b22/ffffff?text=Project+3" class="w-full h-60 object-cover group-hover:scale-110 transition-transform duration-500" alt="Project 3">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">اسم المشروع الثالث</h3>
+                            <p class="text-gray-400">تطوير هوية بصرية كاملة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Contact / CTA Section -->
+        ct
+    </main>
+   
+    <footer class="border-t border-gray-800 mt-10">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-8">
+                <div class="flex-shrink-0">
+                    <a href="#hero" class="flex items-center justify-center md:justify-start gap-3">
+                         <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
+                            <img src="https://i.ibb.co/L0Y3vmd/Ibda-Digtal.png" alt="Ibda Digital Logo Placeholder" class="p-1.5">
+                         </div>
+                         <span class="text-2xl font-extrabold gradient-text">Ibda Digital</span>
+                    </a>
+                    <p class="max-w-sm mt-2 text-gray-400">
+                       &copy; 2024 Ibda Digital. كل الحقوق محفوظة.
+                    </p>
+                </div>
+                <div class="flex flex-col items-center md:items-start gap-4">
+                     <p class="font-bold text-lg">تواصل معنا:</p>
+                     <div class="flex items-center gap-4">
+                        <a href="https://wa.me/201111009530" target="_blank" class="flex items-center gap-2 text-gray-300 hover:text-white transition group">
+                           <svg class="w-6 h-6 text-green-500 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.886-.001 2.269.655 4.398 1.919 6.211l.244.373-1.228 4.475 4.568-1.192.358.215z"/></svg>
+                            <span class="font-semibold tracking-wider">+20 111 100 9530</span>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <a href="mailto:contact@ibda-digital.com" class="flex items-center gap-2 text-gray-300 hover:text-white transition group">
+                             <svg class="w-6 h-6 text-gray-400 group-hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            <span class="font-semibold tracking-wider">contact@ibda-digital.com</span>
+                        </a>
+                    </div>
+                </div>
+                 <div class="flex flex-col items-center md:items-start gap-3">
+                    <p class="font-bold text-lg">تابعنا على:</p>
+                    <div class="flex items-center gap-4">
+                        <a href="#" target="_blank" class="text-gray-400 hover:text-white transition"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M9.198 21.5h4v-8.01h2.598l.397-3.01H13.198V8.41c0-.87.243-1.464 1.482-1.464h1.588V4.021C15.888 3.975 14.985 3.9 14.041 3.9c-2.9 0-4.887 1.773-4.887 5.039v2.54H6.138v3.01h3.06v8.01z"></path></svg></a>
+                        <a href="#" target="_blank" class="text-gray-400 hover:text-white transition"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.585-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.585-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.07-1.645-.07-4.85s.011-3.585.07-4.85c.148-3.225 1.664-4.771 4.919-4.919C8.415 2.175 8.796 2.163 12 2.163m0-1.087C8.741 1.076 8.362 1.088 7.035 1.148c-3.613.164-6.08 2.632-6.246 6.246-.06 1.327-.072 1.706-.072 4.606s.012 3.28.072 4.606c.164 3.613 2.632 6.08 6.246 6.246 1.327.06 1.706.072 4.606.072s3.28-.012 4.606-.072c3.613-.164 6.08-2.632 6.246-6.246.06-1.327.072-1.706.072-4.606s-.012-3.28-.072-4.606C22.924 3.784 20.456 1.316 16.844 1.15c-1.326-.06-1.705-.072-4.606-.072H12z M12 6.841a5.159 5.159 0 100 10.318A5.159 5.159 0 0012 6.841zm0 8.354a3.195 3.195 0 110-6.39 3.195 3.195 0 010 6.39zM16.965 6.581a1.233 1.233 0 100 2.466 1.233 1.233 0 000-2.466z"></path></svg></a>
+                        <a href="#" target="_blank" class="text-gray-400 hover:text-white transition"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"></path></svg></a>
+                        <a href="#" target="_blank" class="text-gray-400 hover:text-white transition"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+   
+    <!-- Service Modal -->
+    <div id="service-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title" class="text-3xl font-extrabold mb-4"></h3>
+            <div id="modal-body" class="text-gray-300 space-y-3"></div>
+        </div>
+    </div>
+
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- PRELOADER ---
+            const preloader = document.getElementById('preloader');
+            preloader.style.opacity = '0';
+            setTimeout(() => preloader.style.display = 'none', 700);
+
+
+            // --- REVEAL ANIMATION ---
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+
+            document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+
+
+
+            // --- MOBILE MENU ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+           
+            // --- STICKY HEADER ---
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', () => {
+                header.classList.toggle('py-2', window.scrollY > 50);
+                header.classList.toggle('py-3', window.scrollY <= 50);
+            });
+
+
+            // --- SERVICES DATA (WITH MORE DETAILS) ---
+            const servicesData = [
+                 {
+                    title: "إدارة قنوات التواصل الاجتماعي",
+                    colorClass: 'service-color-1',
+                    icon: `<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>`,
+                    description: "بناء حضور رقمي قوي ومجتمع متفاعل حول علامتك التجارية عبر المنصات المختلفة.",
+                    details: `<p class="mb-3">نحن لا ندير صفحات فقط، بل نبني مجتمعات رقمية نابضة بالحياة. نتبع عملية منهجية لضمان وصول رسالتك بشكل فعال لجمهورك وتحقيق أهدافك:</p><ul class="list-disc pr-5 mt-2 space-y-2"><li><strong>استلام وفهم الهوية:</strong> نبدأ باستيعاب كامل لهوية البراند، المنتجات، والأهداف.</li><li><strong>إعداد خطة المحتوى (Content Calendar):</strong> نضع استراتيجية محتوى شهرية مبتكرة ومتنوعة بناءً على تحليل السوق والفئة المستهدفة.</li><li><strong>التصميم والتنفيذ:</strong> يقوم فريق المبدعين لدينا بتصميم وتنفيذ البوستات بما يتماشى مع الهوية البصرية لعلامتك التجارية.</li><li><strong>الجدولة والنشر:</strong> نلتزم بالنشر في الأوقات المثالية لضمان أعلى وصول وتفاعل.</li><li><strong>المتابعة والتفاعل:</strong> نتابع التعليقات والرسائل لتعزيز العلاقة مع جمهورك.</li><li><strong>التقارير والتحسين:</strong> نقدم لك تقريراً شهرياً مفصلاً بالنتائج مع مقترحات للتحسين المستمر.</li></ul>`
+                },
+                 {
+                    title: "التصميمات والبوستات",
+                    colorClass: 'service-color-2',
+                    icon: `<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>`,
+                    description: "نحول أفكارك إلى محتوى بصري جذاب يعكس هوية علامتك التجارية ويخطف الأنظار.",
+                    details: `<p class="mb-3">التصميم الجذاب هو أول نقطة اتصال بينك وبين عميلك. نحن نضمن أن تكون هذه النقطة لا تُنسى:</p><ul class="list-disc pr-5 mt-2 space-y-2"><li><strong>تحديد الهدف:</strong> نحدد الهدف من كل تصميم سواء كان تعليمي، ترويجي، أو تفاعلي.</li><li><strong>كتابة النصوص (Copywriting):</strong> نصيغ رسائل تسويقية قوية ومؤثرة تخدم هدف التصميم.</li><li><strong>التنفيذ الإبداعي:</strong> يقوم فريق التصميم لدينا بابتكار التصاميم أو الفيديوهات بأعلى جودة.</li><li><strong>المراجعة والتعديل:</strong> نتيح لك مراجعة العمل قبل النشر لضمان رضاك التام.</li><li><strong>النشر والمتابعة:</strong> ننشر المحتوى ونتابع أداءه لضمان تحقيقه للهدف المرجو.</li></ul>`
+                },
+                {
+                    title: "خدمة الرد والمتابعة",
+                    colorClass: 'service-color-3',
+                    icon: `<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>`,
+                    description: "نكون صوت علامتك التجارية الذي لا يهدأ، ونبني علاقات قوية مع عملائك.",
+                    details: `<p class="mb-3">نحول כל استفسار إلى فرصة بيع وبناء ولاء. خدمتنا للمتابعة والردود تضمن لك راحة البال ورضا العملاء:</p><ul class="list-disc pr-5 mt-2 space-y-2"><li><strong>إعداد دليل الردود (FAQ):</strong> نستلم منك الأسئلة الشائعة ونعيد صياغتها بشكل احترافي.</li><li><strong>التدريب على نبرة البراند:</strong> ندرب فريقنا على التحدث بنفس صوت وأسلوب علامتك التجارية.</li><li><strong>متابعة فورية:</strong> نتابع الرسائل والتعليقات أولاً بأول لضمان عدم تفويت أي فرصة.</li><li><strong>تصعيد الاستفسارات الهامة:</strong> يتم إبلاغك فورًا بأي استفسار يتطلب تدخلك المباشر.</li><li><strong>تقارير أسبوعية:</strong> نرسل لك تقريراً بعدد الاستفسارات والمبيعات التي نتجت عن هذه المتابعة.</li></ul>`
+                },
+                {
+                    title: "الحملات الإعلانية المدفوعة",
+                    colorClass: 'service-color-4',
+                    icon: `<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>`,
+                    description: "نصل بإعلاناتك إلى الجمهور المناسب في الوقت المناسب لتحقيق أفضل عائد على الاستثمار.",
+                    details: `<p class="mb-3">نحن لا ننفق ميزانيتك الإعلانية، بل نستثمرها بذكاء لتحقيق نتائج حقيقية. عملية إدارة الحملات لدينا تشمل:</p><ul class="list-disc pr-5 mt-2 space-y-2"><li><strong>تحديد هدف الحملة:</strong> سواء كان زيادة مبيعات، جمع بيانات عملاء (Leads)، زيادة زيارات الموقع، أو التفاعل.</li><li><strong>بناء الاستراتيجية:</strong> نحدد الجمهور المستهدف بدقة، المنصة الأنسب، الميزانية، والرسالة الإعلانية.</li><li><strong>تصميم الإعلانات:</strong> نبتكر تصاميم ونصوص إعلانية جذابة ومصممة خصيصًا لتحقيق الهدف.</li><li><strong>الإطلاق والمتابعة اليومية:</strong> نطلق الحملة ونراقب أداءها بشكل يومي.</li><li><strong>تحسين مستمر (Optimization):</strong> نقوم بتعديلات مستمرة على الحملة لضمان أفضل أداء ممكن.</li><li><strong>تقرير نهائي:</strong> نزودك بتقرير شامل يوضح الأداء والعائد على الاستثمار (ROI).</li></ul>`
+                },
+                {
+                    title: "إنتاج المحتوى المرئي",
+                    colorClass: 'service-color-5',
+                    icon: `<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`,
+                    description: "ننتج محتوى مرئي احترافي يروي قصة علامتك التجارية ويجذب انتباه جمهورك.",
+                    details: `<p class="mb-3">الفيديو هو الملك في عالم المحتوى الرقمي. نحن نساعدك على إنتاج محتوى مرئي يترك أثرًا لدى جمهورك:</p><ul class="list-disc pr-5 mt-2 space-y-2"><li><strong>الفكرة والسيناريو:</strong> نبدأ بتحديد فكرة إبداعية وكتابة سيناريو (Script) واضح.</li><li><strong>التحضير والتجهيز:</strong> نحضر المنتجات، نختار مكان التصوير، ونجهز كل الأدوات اللازمة.</li><li><strong>التصوير الاحترافي:</strong> يقوم فريقنا بتصوير المشاهد بأعلى جودة.</li><li><strong>المونتاج والإخراج:</strong> نقوم بتحرير ومونتاج الفيديو لإخراجه في أفضل صورة ممكنة.</li><li><strong>النشر الاستراتيجي:</strong> ننشر المحتوى المرئي في الأوقات المناسبة على المنصات المختلفة لتحقيق أعلى مشاهدة.</li></ul>`
+                },
+                {
+                    title: "التسويق عبر المؤثرين",
+                    colorClass: 'service-color-6',
+                    icon: `<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>`,
+                    description: "نصلك بالمؤثرين المناسبين لعلامتك التجارية لزيادة انتشارك ومصداقيتك.",
+                    details: `<p class="mb-3">نحن نختار بعناية ونصنع شراكات مؤثرة تحقق أهدافك التسويقية وتصل بك إلى جمهور جديد:</p><ul class="list-disc pr-5 mt-2 space-y-2"><li><strong>تحديد الهدف:</strong> نحدد بوضوح الهدف من الحملة، سواء كان زيادة مبيعات أو تعزيز الوعي بالعلامة التجارية.</li><li><strong>اختيار دقيق للمؤثرين:</strong> نبحث ونختار المؤثرين الأكثر ملاءمة لعلامتك التجارية وجمهورك.</li><li><strong>التفاوض والاتفاق:</strong> ندير عملية التفاوض بالكامل ونتفق على كافة تفاصيل الحملة.</li><li><strong>متابعة التنفيذ:</strong> نتابع تنفيذ الحملة مع المؤثر لضمان الالتزام بالاتفاق.</li><li><strong>تحليل النتائج:</strong> نحلل أداء الحملة ونقدم لك تقريرًا شفافًا بالنتائج المحققة.</li></ul>`
+                },
+                {
+                    title: "تطوير المواقع والمتاجر",
+                    colorClass: 'service-color-7',
+                    icon: `<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>`,
+                    description: "نبني لك واجهة رقمية احترافية، سريعة، ومتجاوبة تمثل أساس وجودك على الإنترنت.",
+                    details: `<p class="mb-3">موقعك الإلكتروني هو بطاقتك التعريفية في العالم الرقمي. نحن نضمن أن تكون الأفضل:</p><ul class="list-disc pr-5 mt-2 space-y-2"><li><strong>استلام المتطلبات:</strong> نجلس معك لفهم كل متطلباتك (نوع الموقع، المنتجات، طرق الدفع، إلخ).</li><li><strong>الإعداد التقني:</strong> نجهز الخطة التقنية الكاملة من حجز النطاق والاستضافة واختيار المنصة الأنسب.</li><li><strong>التصميم والتطوير:</strong> نصمم ونطور الموقع أو المتجر بشكل عصري ومتجاوب مع جميع الشاشات.</li><li><strong>إدخال المحتوى:</strong> نقوم برفع المنتجات والمحتوى الأولي للموقع.</li><li><strong>اختبار تجربة المستخدم (UX):</strong> نختبر كل جزء في الموقع لضمان تجربة استخدام سهلة وسلسة.</li><li><strong>التسليم والتدريب:</strong> نسلمك الموقع مع تدريب بسيط على لوحة التحكم.</li><li><strong>دعم وصيانة مستمرة:</strong> نقدم خدمات الدعم الفني والصيانة الدورية لضمان عمل موقعك بكفاءة وأمان.</li></ul>`
+                }
+            ];
+
+
+            const servicesContainer = document.getElementById('services-grid');
+            servicesData.forEach((service, index) => {
+                const card = document.createElement('div');
+                card.className = `glass-effect p-6 rounded-2xl reveal card-glow flex flex-col items-center text-center cursor-pointer border border-transparent ${service.colorClass}`;
+                card.style.transitionDelay = `${index * 50}ms`;
+                card.innerHTML = `
+                    <div class="service-icon-container w-16 h-16 mb-5 rounded-xl flex items-center justify-center">
+                        ${service.icon}
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 flex-grow">${service.title}</h3>
+                    <p class="text-gray-400 text-sm">${service.description}</p>
+                `;
+                card.addEventListener('click', () => openModal(service));
+                servicesContainer.appendChild(card);
+                revealObserver.observe(card);
+            });
+           
+            // --- NEW: SMOOTH 3D CARD MOUSE EFFECT ---
+            document.querySelectorAll('#services-grid .card-glow').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const { width, height } = rect;
+                    const rotateX = (y / height - 0.5) * -20; // Invert for natural feel
+                    const rotateY = (x / width - 0.5) * 20;
+                   
+                    // Apply transform directly without transition for instant response
+                    card.style.transition = 'none';
+                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+
+
+                card.addEventListener('mouseleave', () => {
+                    // Re-apply transition for smooth return
+                    card.style.transition = 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)';
+                    card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+                });
+            });
+           
+            const modal = document.getElementById('service-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+
+            window.openModal = function(service) {
+                modalTitle.textContent = service.title;
+                modalTitle.className = `text-3xl font-extrabold mb-4 ${service.colorClass}-text`;
+                modalBody.innerHTML = service.details;
+                modal.classList.add('active');
+            }
+
+
+            window.closeModal = function() {
+                modal.classList.remove('active');
+            }
+           
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+           
+            // --- HERO CANVAS 2D NETWORK ANIMATION ---
+            const canvas = document.getElementById('background-animation');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                let particlesArray;
+                function setCanvasSize() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = document.getElementById('hero').offsetHeight;
+                }
+                class Particle {
+                    constructor(x, y, dirX, dirY, size) { this.x = x; this.y = y; this.directionX = dirX; this.directionY = dirY; this.size = size; }
+                    draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = 'rgba(48, 197, 155, 0.4)'; ctx.fill(); }
+                    update() {
+                        if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                        if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+                        this.x += this.directionX; this.y += this.directionY; this.draw();
+                    }
+                }
+                function init() {
+                    particlesArray = [];
+                    let num = (canvas.height * canvas.width) / 10000;
+                    for (let i = 0; i < num; i++) {
+                        let size = (Math.random() * 2) + 1;
+                        let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                        let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                        let dirX = (Math.random() * .3) - .15;
+                        let dirY = (Math.random() * .3) - .15;
+                        particlesArray.push(new Particle(x, y, dirX, dirY, size));
+                    }
+                }
+                function animate() { requestAnimationFrame(animate); ctx.clearRect(0, 0, innerWidth, innerHeight); for (let i = 0; i < particlesArray.length; i++) particlesArray[i].update(); connect(); }
+                function connect() {
+                    let opacityValue = 1;
+                    for (let a = 0; a < particlesArray.length; a++) {
+                        for (let b = a; b < particlesArray.length; b++) {
+                            let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                            if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                                opacityValue = 1 - (distance / 20000);
+                                ctx.strokeStyle = `rgba(0, 163, 255, ${opacityValue * 0.4})`;
+                                ctx.lineWidth = 1;
+                                ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke();
+                            }
+                        }
+                    }
+                }
+                window.addEventListener('resize', () => { setCanvasSize(); init(); });
+                setCanvasSize(); init(); animate();
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+

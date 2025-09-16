@@ -1,0 +1,60 @@
+/* الخلفية الرئيسية */
+.animated-gradient-bg {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fad390, #6a11cb, #2575fc);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  overflow: hidden;
+  position: relative;
+}
+
+/* حركة الخلفية */
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Blobs */
+.background-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.6;
+  animation: moveBlobs 20s infinite alternate ease-in-out;
+}
+
+.blob-1 {
+  width: 400px;
+  height: 400px;
+  background: #ff6a00;
+  top: -100px;
+  left: -100px;
+  animation-duration: 25s;
+}
+
+.blob-2 {
+  width: 500px;
+  height: 500px;
+  background: #2575fc;
+  bottom: -150px;
+  right: -150px;
+  animation-duration: 30s;
+}
+
+.blob-3 {
+  width: 350px;
+  height: 350px;
+  background: #6a11cb;
+  top: 50%;
+  left: 30%;
+  animation-duration: 35s;
+}
+
+/* حركة blobs */
+@keyframes moveBlobs {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, -60px) scale(1.3); }
+  100% { transform: translate(-40px, 40px) scale(1); }
+}
